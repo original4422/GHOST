@@ -1,0 +1,36 @@
+# GHOST dependencies
+# NOTE: versions are intentionally left unpinned. The most version-sensitive
+# package is `transformers`: the victim VLMs used here (Qwen2.5-VL,
+# GLM-4.1V-Thinking, Llama-3.2-Vision, LLaVA-1.6, PaliGemma) require a recent
+# release. If a model class fails to import (e.g. Qwen2_5_VLForConditionalGeneration,
+# Glm4vForConditionalGeneration), upgrade transformers first.
+
+# --- Core: model loading, attack, generation ---
+torch
+torchvision
+transformers            # recent version required (Qwen2.5-VL / GLM-4.1V / Llama-3.2-Vision)
+accelerate              # needed for device_map="auto" (llama / glm) and trl
+open_clip_torch         # CLIP ViT-H-14 image/text encoder
+diffusers               # Stable Diffusion 2.1 unCLIP pipeline
+sentencepiece           # tokenizer backend for several VLMs
+pillow
+numpy
+tqdm
+matplotlib
+
+# --- Stage 4: LoRA / QLoRA fine-tuning ---
+peft
+trl                     # SFTTrainer + SFTConfig
+bitsandbytes            # 4-bit (QLoRA) quantization
+wandb                   # finetune.py calls wandb.init() (login or set WANDB_MODE=offline)
+
+# --- Stage 3: evaluation ---
+scikit-learn            # pope_eval.py metrics (accuracy / precision / recall / f1)
+scikit-image            # evals/SSIM-eval.py (structural similarity)
+torchmetrics            # evals/fid_eval.py (Frechet Inception Distance)
+pandas                  # evals/transfer_eval.py CSV summaries
+openai                  # evals/eval_projector_gpt.py (GPT-as-judge; needs OPENAI_API_KEY)
+
+# --- Optional external judge backends (commented out in utils.py) ---
+# google-genai          # get_gemini_output()
+# cohere                # get_aya_output()

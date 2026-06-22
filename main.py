@@ -36,7 +36,10 @@ def get_args():
     parser.add_argument("--sort_images", type=bool, default=False, help="Sort images based on similarity to target object using CLIP")
     parser.add_argument("--t", type=int, default=0, help="Number of timesteps for the diffusion model")
     parser.add_argument("--num_of_inference", type=int, default=50, help="Number of max inference steps for the diffusion model")
-    
+
+    # Range of candidate images to process (index into the filtered list)
+    parser.add_argument("--start_index", type=int, default=0, help="Start index (inclusive) into the candidate image list")
+    parser.add_argument("--end_index", type=int, default=-1, help="End index (exclusive) into the candidate image list; -1 means process until the end")
 
     # Others
     parser.add_argument("--seed", type=int, default=42, help="Seed")
@@ -146,10 +149,11 @@ def attack(args):
     asr = 0
     total_images_generated = 0
     total_images_optimized = 0
+    end_index = args.end_index if args.end_index >= 0 else len(cat_spur_all)
     for i, img_id in enumerate(cat_spur_all):
-        if i < 200:
+        if i < args.start_index:
             continue
-        if i >= 400:  # Limit to first 10 images for debugging
+        if i >= end_index:
             break
         img_id = cat_spur_all[i]
         image, path = dset[int(img_id)]

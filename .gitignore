@@ -153,6 +153,8 @@ venv.bak/
 
 # mkdocs documentation
 /site
+graphify-out/
+.understand-anything/
 
 # mypy
 .mypy_cache/
